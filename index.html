@@ -420,22 +420,23 @@
             text-shadow: 
                 0 0 40px rgba(255, 255, 255, 0.8), 
                 0 0 80px rgba(255, 255, 255, 0.4);
-            animation: pulse 3s ease-in-out infinite;
             /* Animated gradient text */
             background: linear-gradient(120deg, #ffffff 0%, #e0e0e0 50%, #ffffff 100%);
             background-size: 200% 100%;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: shimmer 4s ease-in-out infinite, pulse 3s ease-in-out infinite;
+            animation: shimmerPulse 4s ease-in-out infinite;
             will-change: background-position, transform;
         }
-
-        @keyframes pulse {
+        
+        @keyframes shimmerPulse {
             0%, 100% { 
+                background-position: 100% 0;
                 transform: scale(1); 
             }
             50% { 
+                background-position: -100% 0;
                 transform: scale(1.03); 
             }
         }
@@ -609,21 +610,7 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
-            /* 3D transform perspective */
-            transform-style: preserve-3d;
             will-change: transform;
-        }
-        
-        .right-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity var(--transition-base);
         }
 
         .right-card:hover {
@@ -632,10 +619,7 @@
                 0 20px 60px rgba(255, 255, 255, 0.2),
                 inset 0 2px 0 rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.5);
-        }
-        
-        .right-card:hover::before {
-            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .right-title {
@@ -1163,11 +1147,12 @@
 
         function closeModal() {
             const overlay = document.getElementById('modalOverlay');
-            overlay.style.animation = 'fadeOut 0.3s ease';
+            const animationDuration = 300; // milliseconds
+            overlay.style.animation = `fadeOut ${animationDuration}ms ease`;
             setTimeout(() => {
                 overlay.style.display = 'none';
                 overlay.style.animation = '';
-            }, 300);
+            }, animationDuration);
         }
 
         // Close modal when clicking outside of content
@@ -1285,24 +1270,6 @@
                     scrollTicking = true;
                 }
             });
-            
-            // Enhanced hover effects for cards
-            const cards = document.querySelectorAll('.right-card');
-            cards.forEach(card => {
-                card.addEventListener('mouseenter', function(e) {
-                    const rect = this.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    this.style.setProperty('--mouse-x', x + 'px');
-                    this.style.setProperty('--mouse-y', y + 'px');
-                });
-            });
-            
-            // Add loading complete class to body for additional animations
-            setTimeout(() => {
-                document.body.classList.add('loaded');
-            }, 100);
         });
 
         // Handle window resize for responsive star field
